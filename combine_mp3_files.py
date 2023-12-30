@@ -28,7 +28,16 @@ logging.basicConfig(level=log_level,
                     filemode=log_file_mode)
 
 def get_number_from_filename(filename):
-    # ... [Your existing function code here]
+    try:
+        # Try to find a 3-digit number, then a 2-digit number
+        for pattern in [r'\d{3}', r'\d{2}']:
+            match = re.search(pattern, filename)
+            if match:
+                return int(match.group())
+        return None
+    except Exception as e:
+        logging.error(f"Error processing filename '{filename}': {e}")
+        return None
 
 def concatenate_mp3_files(input_directory, output_directory, output_size_mb):
     try:
@@ -48,9 +57,16 @@ def concatenate_mp3_files(input_directory, output_directory, output_size_mb):
         combined = AudioSegment.empty()
         output_files = []
         current_size = 0
+        
+        # Get the parent directory of the last component
+        parent_directory_path = os.path.dirname(input_directory)
+
+        # Now get the last part of this parent directory path
+        parent_directory_name = os.path.basename(parent_directory_path)
 
         # Get the first 15 characters of the input directory name
-        input_dir_name = os.path.basename(input_directory)[:15]
+        input_dir_name = os.path.basename(parent_directory_name)[:15]
+        print (input_dir_name)
 
         for file in sorted_files:
             try:
@@ -75,8 +91,8 @@ def concatenate_mp3_files(input_directory, output_directory, output_size_mb):
             # Format the index as a two-digit number
             index_str = f'{i+1:02d}'
 
-            # Use the input directory name in the output file name
-            output_file_name = f'{input_dir_name}_output_{index_str}.mp3'
+            # Construct the output file name using the directory name and index
+            output_file_name = f'{input_dir_name}_{index_str}.mp3'
             output_file_path = os.path.join(output_directory, output_file_name)
             try:
                 output.export(output_file_path, format='mp3')
