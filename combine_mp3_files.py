@@ -4,28 +4,36 @@ import logging
 import configparser
 from pydub import AudioSegment
 
-# Read configuration
-config = configparser.ConfigParser()
-config.read('config.ini')
+def load_config(file_path='config.ini'):
+    """
+    Load and validate the configuration from a file.
+    """
+    config = configparser.ConfigParser()
+    config.read(file_path)
+    required_sections = {'Logging', 'Paths', 'Settings'}
+    if not required_sections.issubset(config.sections()):
+        raise ValueError(f"Missing required sections in config: {required_sections}")
+    return config
 
-# Retrieve logging configuration from the configuration file
-log_level = config['Logging']['LogLevel']
-log_file_path = config['Logging']['LogFilePath']
-log_file_mode = config['Logging']['LogFileMode']
-log_format = config['Logging']['LogFormat']
-date_format = config['Logging']['DateFormat']
+def setup_logging(config):
+    """
+    Configure logging based on the provided configuration.
+    """
+    log_level = config['Logging']['LogLevel']
+    log_file_path = config['Logging']['LogFilePath']
+    log_file_mode = config['Logging']['LogFileMode']
+    log_format = config['Logging']['LogFormat']
+    date_format = config['Logging']['DateFormat']
 
-# Ensure log directory exists
-log_directory = os.path.dirname(log_file_path)
-if not os.path.exists(log_directory):
-    os.makedirs(log_directory)
+    log_directory = os.path.dirname(log_file_path)
+    if not os.path.exists(log_directory):
+        os.makedirs(log_directory)
 
-# Configure logging
-logging.basicConfig(level=log_level,
-                    format=log_format,
-                    datefmt=date_format,
-                    filename=log_file_path,
-                    filemode=log_file_mode)
+    logging.basicConfig(level=log_level,
+                        format=log_format,
+                        datefmt=date_format,
+                        filename=log_file_path,
+                        filemode=log_file_mode)
 
 def get_number_from_filename(filename):
     try:
@@ -104,6 +112,9 @@ def concatenate_mp3_files(input_directory, output_directory, output_size_mb):
         logging.critical(f"Failed to concatenate MP3 files: {e}")
 
 def main():
+    config = load_config()
+    setup_logging(config)
+    
     # Extract parameters from the config file
     input_directory = config['Paths']['InputDirectory']
     output_directory = config['Paths']['OutputDirectory']
