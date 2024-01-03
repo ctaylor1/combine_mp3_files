@@ -3,6 +3,10 @@
 ## Introduction
 This Python script provides a utility to concatenate multiple MP3 files based on their filenames. It is designed to handle large sets of MP3 files, organizing them into combined files of specified maximum sizes. The script utilizes a configuration file for settings and employs robust logging for monitoring its operations.
 
+## Use Cases
+- Take audiobook files by chapter and consolidate them down to a few files.
+- Take an entire album and turn it into one or two files.
+
 ## Features
 - **Configurable**: Utilizes a `config.ini` file for easy configuration of paths, logging, and operational parameters.
 - **Logging**: Detailed logging of operations, errors, and informational messages.
@@ -11,7 +15,7 @@ This Python script provides a utility to concatenate multiple MP3 files based on
 
 ## Requirements
 - Python 3.x
-- `pydub` library (for handling MP3 files)
+- `pydub` library (for handling MP3 files).  Included in requirements.txt file below.
 - A valid `config.ini` file with appropriate settings.
 
 ## Installation
@@ -60,7 +64,7 @@ The script will read the MP3 files from the input directory, concatenate them, a
 Contributions to this project are welcome. Please ensure that any pull requests adhere to the existing coding style and include appropriate tests.
 
 ## License
-[Specify the License here]
+GNU General Public License 
 
 ---
 
